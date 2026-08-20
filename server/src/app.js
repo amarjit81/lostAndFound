@@ -10,6 +10,7 @@ import { rateLimit } from "express-rate-limit";
 import authRoutes from "./routes/authRoutes.js";
 import itemRoutes from "./routes/itemRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
+import { connectDatabase } from "./config/db.js";
 import { errorHandler, notFound } from "./middleware/errors.js";
 
 const app = express();
@@ -31,6 +32,14 @@ if (process.env.NODE_ENV !== "test") app.use(morgan("dev"));
 app.use("/api", rateLimit({ windowMs: 15 * 60 * 1000, limit: 300, standardHeaders: "draft-8", legacyHeaders: false }));
 
 app.get("/api/health", (req, res) => res.json({ status: "ok", service: "campus-reclaim-api" }));
+app.use("/api", async (req, res, next) => {
+  try {
+    await connectDatabase();
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 app.use("/api/auth", authRoutes);
 app.use("/api/items", itemRoutes);
 app.use("/api/notifications", notificationRoutes);

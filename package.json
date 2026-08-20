@@ -2,12 +2,12 @@
   "name": "campus-reclaim",
   "version": "2.0.0",
   "private": true,
+  "type": "module",
   "workspaces": ["client", "server"],
   "description": "A MERN lost-and-found portal for campus communities",
   "scripts": {
     "dev": "concurrently -n api,web -c cyan,magenta \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
     "build": "npm run build --prefix client",
-    "postinstall": "npm run build",
     "start": "npm run start --prefix server",
     "test": "npm run test --prefix server && npm run test --prefix client"
   },
